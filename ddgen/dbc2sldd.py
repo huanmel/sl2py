@@ -90,7 +90,10 @@ def create_bus_entries_from_dbc(dbc_file):
     import re
     def make_c_compatible(name):
         # Replace any non-alphanumeric or underscore with underscore
-        return re.sub(r'[^a-zA-Z0-9_]', '_', name)
+        new_enum_name=re.sub(r'[^a-zA-Z0-9_]', '_', name)
+        if new_enum_name.startswith(('0','1','2','3','4','5','6','7','8','9')):
+            new_enum_name='E_'+new_enum_name    
+        return new_enum_name
 
     for message in db.frames:
         # Prepare signal elements for the message
@@ -102,7 +105,7 @@ def create_bus_entries_from_dbc(dbc_file):
             # Check for enumeration
             enum_type = None
             enum_dict = None
-            is_enum = isinstance(signal.values, dict)
+            is_enum = isinstance(signal.values, dict) and bool(signal.values)
             # If signal.values matches a db_enums entry
             if is_enum:
                 for enum_name, enum_table in db_enums.items():
