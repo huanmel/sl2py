@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSource FormatVersion="1" MinRelease="R2014a" Arch="win64">
+  <Object Class="DD.ENTRY">
+    <P Name="Name" Class="char">MyBus1</P>
+    <P Name="UUID" Class="char">dda5ec8f-0d97-4f19-a817-c15604585cf8</P>
+    <P Name="Namespace" Class="char">dacaf35e-55a5-454d-a7c1-93db038a210e</P>
+    <P Name="LastMod" Class="char">20250801T162333.056717</P>
+    <P Name="LastModBy" Class="char">robot</P>
+    <P Name="IsDerived" Class="char">0</P>
+    <P Name="Value">
+      <Element Class="Simulink.Bus">
+        <P Name="Alignment" Class="double">-1.0</P>
+        <P Name="PreserveElementDimensions" Class="logical">0</P>
+        <P Name="Elements_internal" Dimension="3*1">
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char">Is Message Available</P>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MyBoolVar</P>
+            <P Name="DataType_internal" Class="char">boolean</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char"/>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MyUint16Var</P>
+            <P Name="DataType_internal" Class="char">uint16</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char"/>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MySingleVar</P>
+            <P Name="DataType_internal" Class="char">single</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+        </P>
+        <P Name="Description" Class="char"/>
+        <P Name="DataScope" Class="char">Auto</P>
+        <P Name="HeaderFile" Class="char"/>
+      </Element>
+    </P>
+  </Object>
+  <Object Class="DD.ENTRY">
+    <P Name="Name" Class="char">MyBus2</P>
+    <P Name="UUID" Class="char">a1edcdf2-2d9a-4bdd-b56d-da8a470438e8</P>
+    <P Name="Namespace" Class="char">dacaf35e-55a5-454d-a7c1-93db038a210e</P>
+    <P Name="LastMod" Class="char">20250801T162333.056801</P>
+    <P Name="LastModBy" Class="char">robot</P>
+    <P Name="IsDerived" Class="char">0</P>
+    <P Name="Value">
+      <Element Class="Simulink.Bus">
+        <P Name="Alignment" Class="double">-1.0</P>
+        <P Name="PreserveElementDimensions" Class="logical">0</P>
+        <P Name="Elements_internal" Dimension="3*1">
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char">Is Message Available</P>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MyBoolVar2</P>
+            <P Name="DataType_internal" Class="char">boolean</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char"/>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MyUint8Var</P>
+            <P Name="DataType_internal" Class="char">uint8</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+          <Element Class="Simulink.BusElement">
+            <P Name="Min_internal" Class="double" Dimension="0*0"/>
+            <P Name="Max_internal" Class="double" Dimension="0*0"/>
+            <P Name="DimensionsMode" Class="char">Fixed</P>
+            <P Name="SamplingMode" Class="char">Sample based</P>
+            <P Name="SampleTime" Class="double">-1.0</P>
+            <P Name="Description" Class="char"/>
+            <P Name="DocUnits" Class="char"/>
+            <P Name="Name" Class="char">MyDoubleVar</P>
+            <P Name="DataType_internal" Class="char">double</P>
+            <P Name="Complexity" Class="char">real</P>
+            <P Name="Dimensions" Class="double">1</P>
+          </Element>
+        </P>
+        <P Name="Description" Class="char"/>
+        <P Name="DataScope" Class="char">Auto</P>
+        <P Name="HeaderFile" Class="char"/>
+      </Element>
+    </P>
+  </Object>
+  <Object Class="DD.ENTRY">
+    <P Name="Name" Class="char">MyParameter</P>
+    <P Name="UUID" Class="char">ee9ec796-8192-4aae-851f-34f33fc45b38</P>
+    <P Name="Namespace" Class="char">dacaf35e-55a5-454d-a7c1-93db038a210e</P>
+    <P Name="LastMod" Class="char">20250801T162333.056847</P>
+    <P Name="LastModBy" Class="char">robot</P>
+    <P Name="IsDerived" Class="char">0</P>
+    <P Name="Value">
+      <Element Class="Simulink.Parameter">
+        <P Name="Value" Class="single" Dimension="1*2">13.0 96.8</P>
+        <P Name="Complexity" Class="char">real</P>
+        <P Name="Dimensions" Class="double" Dimension="1*2">1.0 2.0</P>
+        <P Name="Description" Class="char">Accelerator pedal driver: Channel1InputRange - 1st channel extreme voltage ratio</P>
+        <P Name="DataType" Class="char">single</P>
+        <P Name="Min" Class="double">0.0</P>
+        <P Name="Max" Class="double">100.0</P>
+        <P Name="DocUnits" Class="char">%</P>
+        <P Name="DimensionsMode" Class="char">Fixed</P>
+        <P Name="CoderInfo">
+          <Element Class="Simulink.CoderInfo">
+            <P Name="HasCoderInfo" Class="logical">1</P>
+            <P Name="StorageClass" Class="char">Custom</P>
+            <P Name="TypeQualifier" Class="char"/>
+            <P Name="Alias" Class="char"/>
+            <P Name="Alignment" Class="double">-1.0</P>
+            <P Name="IsCSCPackageOverridden" Class="logical">0</P>
+            <P Name="CSCPackageName" Class="char">EcoObj</P>
+            <P Name="ParameterOrSignal" Class="char">Parameter</P>
+            <P Name="CustomStorageClass" Class="char">Calibration</P>
+            <P Name="CustomAttributes">
+              <Element Class="SimulinkCSC.AttribClass_EcoObj_Calibration">
+                <P Name="HeaderFile" Class="char"/>
+              </Element>
+            </P>
+          </Element>
+        </P>
+      </Element>
+    </P>
+  </Object>
+  <Object Class="DD.Dictionary">
+    <P Name="AccessBaseWorkspace" Class="logical">0</P>
+  </Object>
+</DataSource>

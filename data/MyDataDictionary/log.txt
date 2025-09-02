@@ -1,0 +1,2 @@
+start
+ 01-Aug-25 16:23:42.22 "C:\D\proj\gh\sl2py\data\MyDataDictionary" 

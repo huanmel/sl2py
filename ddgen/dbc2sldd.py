@@ -56,19 +56,27 @@ def propose_data_type(signal):
             
 def create_bus_entries_from_dbc(dbc_file):
     """
-    Read a DBC file and create a Simulink Data Dictionary with buses for each CAN message.
-    
+    Read a DBC file and create Simulink Data Dictionary buses and enums for each CAN message.
     Args:
         dbc_file (str): Path to the input DBC file.
-        output_file (str): Path to the output .sldd file.
+    Returns:
+        tuple: (bus_entries, EnumsExport)
     """
-    # Load DBC file
-    # db = canmatrix.formats.loadp(dbc_file, "dbc")
     db = canmatrix.formats.loadp_flat(str(dbc_file))
-    dbc_name=os.path.basename(dbc_file)
-    # for frame in dbc.frames:
-    # Create bus entries for each message
+    dbc_name = os.path.basename(dbc_file)
     bus_entries = []
+    EnumsExport = []
+    # Copy value tables (enumerations) from db
+    db_enums = dict(db.value_tables)
+    
+    # for enum in db_enums:
+    enum_names=list(db_enums.keys())
+    for enum_name in enum_names:
+        # Ensure enum name ends with _enum
+        if not enum_name.endswith('_enum'):
+            new_enum_name = enum_name + '_enum'
+            db_enums[new_enum_name] = db_enums.pop(enum_name)
+                
     element_avl_dict = {
                 "Name": "IsMsgAvl",
                 "DataType": 'boolean',
@@ -76,14 +84,59 @@ def create_bus_entries_from_dbc(dbc_file):
                 "Description": "Is Message Available",
                 "Units": ""
             }
+        # Helper to check if enum already exported
+    def enum_in_export(enum_name):
+        return any(enum_name in d for d in EnumsExport)
+    import re
+    def make_c_compatible(name):
+        # Replace any non-alphanumeric or underscore with underscore
+        return re.sub(r'[^a-zA-Z0-9_]', '_', name)
+
     for message in db.frames:
         # Prepare signal elements for the message
+        if message.name.startswith("VECTOR__INDEPENDENT_SIG"):
+            # Skip messages that are not relevant for Simulink
+            continue
         elements = []
         for signal in message.signals:
+            # Check for enumeration
+            enum_type = None
+            enum_dict = None
+            is_enum = isinstance(signal.values, dict)
+            # If signal.values matches a db_enums entry
+            if is_enum:
+                for enum_name, enum_table in db_enums.items():
+                    if signal.values == enum_table:
+                        # Ensure enum name ends with _enum
+                        # if not enum_name.endswith('_enum'):
+                        #     new_enum_name = enum_name + '_enum'
+                        #     db_enums[new_enum_name] = db_enums.pop(enum_name)
+                        #     enum_name = new_enum_name
+                        #     enum_table = db_enums[enum_name]
+                        enum_type = enum_name
+                        enum_dict = enum_table
+                        break
+                if enum_type:
+                    # Use Enum: EnumName
+                    data_type = f"Enum: {enum_type}"
+                    # Export enum if not already
+                    if not enum_in_export(enum_type):
+                        EnumsExport.append({enum_type: enum_dict})
+                elif signal.values:
+                    # Create new enum for this signal
+                    enum_type = signal.name + "_enum"
+                    enum_dict = signal.values
+                    data_type = f"Enum: {enum_type}"
+                    db_enums[enum_type] = enum_dict
+                    if not enum_in_export(enum_type):
+                        EnumsExport.append({enum_type: enum_dict})
+            else:
+                data_type = propose_data_type(signal)
             element_dict = {
                 "Name": signal.name,
-                "DataType": propose_data_type(signal),
-                "Dimensions": 1,  # Signals are typically scalar in CAN messages
+                "DataType": data_type,
+                "IsEnum": is_enum,
+                "Dimensions": 1,
                 "Description": signal.comment or "",
                 "Units": signal.unit or ""
             }
@@ -95,11 +148,26 @@ def create_bus_entries_from_dbc(dbc_file):
             # Ensure availability signal is present
             elements.insert(0, element_avl_dict)  # Insert availability signal at the start
         # Create bus for the message
-        bus_name ="CAN_"+message.name+"_t"
+        bus_name ="CAN_MSG_"+message.name+"_t"
         # bus_element = create_simulink_bus(bus_name, elements)
         bus_entries.append((bus_name, elements))
-        
-    return bus_entries
+
+    # Post-process EnumsExport for C compatibility
+    for enum in EnumsExport:
+        for enum_name, enum_table in enum.items():
+            # Ensure enum name ends with _enum
+            if not enum_name.endswith('_enum'):
+                new_enum_name = enum_name + '_enum'
+                enum[new_enum_name] = enum.pop(enum_name)
+                enum_name = new_enum_name
+                enum_table = enum[enum_name]
+            # Replace C-incompatible symbols in enum value names
+            for k in list(enum_table.keys()):
+                v = enum_table[k]
+                new_v = make_c_compatible(v) if isinstance(v, str) else v
+                if new_v != v:
+                    enum_table[k] = new_v
+    return bus_entries, EnumsExport
 
 # def bus_entries_preproc():
 #     """
@@ -136,9 +204,9 @@ def dbc2sldd_gen(dbc_file):
     sldd_name= os.path.splitext(os.path.basename(dbc_file))[0] + ".sldd"
     sldd_path = os.path.join(os.path.dirname(dbc_file), sldd_name)
     # Create Simulink Data Dictionary from DBC
-    bus_entries=create_bus_entries_from_dbc(dbc_file)
+    bus_entries, enums_entries =create_bus_entries_from_dbc(dbc_file)
     print([msg for (msg,_) in bus_entries])
-    slddgen.create_simulink_dd(bus_entries,sldd_path)
+    slddgen.create_simulink_dd(sldd_path,bus_entries=bus_entries,enum_entries=enums_entries)
     print(f"\nSimulink Data Dictionary '{sldd_name}' created successfully from DBC file.\npath:{sldd_path}")
 
 # Example usage

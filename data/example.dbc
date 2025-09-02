@@ -34,7 +34,11 @@ NS_ :
 BS_:
 
 BU_: EC AC
+VAL_TABLE_ MyCanEnum 7 "NA" 6 "ERR" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "Value1" 0 "Value0" ;
 
+
+BO_ 19 MyMessage: 8 Vector__XXX
+ SG_ MySignal : 0|3@1+ (1,0) [0|7] "" Vector__XXX
 
 BO_ 2147483652 EC_Status_3: 8 EC
  SG_ EC3_Temp_Floadback : 11|1@0+ (1,0) [0|1] ""  AC
@@ -104,4 +108,5 @@ BA_DEF_  "BusType" STRING ;
 BA_DEF_DEF_  "GenMsgCycleTime" 100;
 BA_DEF_DEF_  "GenMsgSendType" "cyclic";
 BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 19 MySignal 7 "NA" 6 "ERR" 5 "Description for the value '0x5'" 4 "Description for the value '0x4'" 3 "Description for the value '0x3'" 2 "Description for the value '0x2'" 1 "Value1" 0 "Value0" ;
 
