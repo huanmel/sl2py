@@ -1,6 +1,8 @@
 import os
 from canmatrix import canmatrix
 import sys
+import yaml
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))  # Adjust path as needed
 from ddgen import slddgen
 
@@ -54,7 +56,7 @@ def propose_data_type(signal):
             else:
                 return "uint64"
             
-def create_bus_entries_from_dbc(dbc_file):
+def create_bus_entries_from_dbc(dbc_file,conf=None):
     """
     Read a DBC file and create Simulink Data Dictionary buses and enums for each CAN message.
     Args:
@@ -64,17 +66,36 @@ def create_bus_entries_from_dbc(dbc_file):
     """
     db = canmatrix.formats.loadp_flat(str(dbc_file))
     dbc_name = os.path.basename(dbc_file)
+    if conf:
+        if dbc_name in conf:
+            conf=conf[dbc_name]
+        else:
+            conf=None
+            
     bus_entries = []
     EnumsExport = []
     # Copy value tables (enumerations) from db
     db_enums = dict(db.value_tables)
     
     # for enum in db_enums:
+    def enum_name_proc(enum_name):
+        new_enum_name=enum_name
+        if not enum_name.endswith('_enum'):
+            new_enum_name = enum_name + '_enum'
+        if conf['enum_prefix'] and not new_enum_name.startswith(conf['enum_prefix'] ): 
+            new_enum_name = conf['enum_prefix'] +new_enum_name
+        return new_enum_name
+        
+        
     enum_names=list(db_enums.keys())
     for enum_name in enum_names:
         # Ensure enum name ends with _enum
-        if not enum_name.endswith('_enum'):
-            new_enum_name = enum_name + '_enum'
+        new_enum_name=enum_name_proc(enum_name)
+        # if not enum_name.endswith('_enum'):
+        #     new_enum_name = enum_name + '_enum'
+        # if conf['enum_prefix'] and not new_enum_name.startswith(conf['enum_prefix'] ): 
+        #     new_enum_name = conf['enum_prefix'] +new_enum_name
+        if not (new_enum_name == enum_name):
             db_enums[new_enum_name] = db_enums.pop(enum_name)
                 
     element_avl_dict = {
@@ -100,6 +121,10 @@ def create_bus_entries_from_dbc(dbc_file):
         if message.name.startswith("VECTOR__INDEPENDENT_SIG"):
             # Skip messages that are not relevant for Simulink
             continue
+        if conf and conf['msgs']:
+            if message.name not in conf['msgs']:
+                continue
+            
         elements = []
         for signal in message.signals:
             # Check for enumeration
@@ -118,6 +143,7 @@ def create_bus_entries_from_dbc(dbc_file):
                         #     enum_table = db_enums[enum_name]
                         enum_type = enum_name
                         enum_dict = enum_table
+                        
                         break
                 if enum_type:
                     # Use Enum: EnumName
@@ -127,7 +153,8 @@ def create_bus_entries_from_dbc(dbc_file):
                         EnumsExport.append({enum_type: enum_dict})
                 elif signal.values:
                     # Create new enum for this signal
-                    enum_type = signal.name + "_enum"
+                    # enum_type = signal.name + "_enum"
+                    enum_type=enum_name_proc(signal.name)
                     enum_dict = signal.values
                     data_type = f"Enum: {enum_type}"
                     db_enums[enum_type] = enum_dict
@@ -167,7 +194,13 @@ def create_bus_entries_from_dbc(dbc_file):
             # Replace C-incompatible symbols in enum value names
             for k in list(enum_table.keys()):
                 v = enum_table[k]
-                new_v = make_c_compatible(v) if isinstance(v, str) else v
+                if v is None  or (v and (v == '' or v.isspace() or  v.startswith("Description for the value"))):
+                    v1 = f"VALUE_{k}"
+                else:
+                    v1=v
+                # v1 = v if v and not v.startswith("Description for the value") else f"VALUE_{k}"
+                
+                new_v = make_c_compatible(v1) if isinstance(v1, str) else v1
                 if new_v != v:
                     enum_table[k] = new_v
     return bus_entries, EnumsExport
@@ -192,7 +225,7 @@ def create_bus_entries_from_dbc(dbc_file):
 #                 raise ValueError(f"Element {element} in bus {bus_name} is missing required keys.")
         
 #     return bus_entries
-def dbc2sldd_gen(dbc_file):
+def dbc2sldd_gen(dbc_file,conf=None):
     """
     Generate a Simulink Data Dictionary from a DBC file.
     
@@ -206,8 +239,14 @@ def dbc2sldd_gen(dbc_file):
     # dbc_file = "example.dbc"
     sldd_name= os.path.splitext(os.path.basename(dbc_file))[0] + ".sldd"
     sldd_path = os.path.join(os.path.dirname(dbc_file), sldd_name)
+    conf_file= os.path.join(os.path.dirname(dbc_file), "generate.yml")
+    conf=None
+    if os.path.exists(conf_file):
+        with open(conf_file, 'r') as file:
+            conf = yaml.safe_load(file)
+
     # Create Simulink Data Dictionary from DBC
-    bus_entries, enums_entries =create_bus_entries_from_dbc(dbc_file)
+    bus_entries, enums_entries =create_bus_entries_from_dbc(dbc_file,conf)
     print([msg for (msg,_) in bus_entries])
     slddgen.create_simulink_dd(sldd_path,bus_entries=bus_entries,enum_entries=enums_entries)
     print(f"\nSimulink Data Dictionary '{sldd_name}' created successfully from DBC file.\npath:{sldd_path}")

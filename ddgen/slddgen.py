@@ -205,7 +205,7 @@ def create_enum_entry_value(enum_dict):
     for value, desc in sorted(enum_dict.items()):
         elem = ET.Element("Element")
         # Name: use description if not empty, else fallback to 'Value{value}'
-        name = desc if desc and not desc.startswith("Description for the value") else f"Value{value}"
+        name = desc if desc else f"VALUE_{value}"
         ET.SubElement(elem, "P", Name="Name", Class="char").text = name
         ET.SubElement(elem, "P", Name="Value", Class="char").text = str(value)
         # description = "" if desc.startswith("Description for the value") or desc == name else desc

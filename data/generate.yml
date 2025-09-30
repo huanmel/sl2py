@@ -1,0 +1,4 @@
+ - example.dbc:
+    file: "example.dbc"
+    msgs: ["AC_Message", "MyMessage"]
+    enum_prefix: ""
