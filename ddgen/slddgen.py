@@ -16,7 +16,7 @@ def create_bus_element(element_dict):
     ET.SubElement(elem, "P", Name="SamplingMode", Class="char").text = "Sample based"
     ET.SubElement(elem, "P", Name="SampleTime", Class="double").text = "-1.0"
     ET.SubElement(elem, "P", Name="Description", Class="char").text = element_dict.get("Description", "")
-    ET.SubElement(elem, "P", Name="DocUnits", Class="char").text = element_dict.get("DocUnits", "")
+    ET.SubElement(elem, "P", Name="DocUnits", Class="char").text = element_dict.get("Units", "")
     ET.SubElement(elem, "P", Name="Name", Class="char").text = element_dict["Name"]
     ET.SubElement(elem, "P", Name="DataType_internal", Class="char").text = element_dict["DataType"]
     ET.SubElement(elem, "P", Name="Complexity", Class="char").text = "real"
